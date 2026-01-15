@@ -1,0 +1,226 @@
+{
+  "project": {
+    "name": "新規Webアプリケーション開発プロジェクト",
+    "startDate": "2026-01-01",
+    "endDate": "2026-03-31",
+    "description": "顧客管理システムのWebアプリケーション開発"
+  },
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "name": "要件定義",
+      "description": "システム要件の定義と文書化",
+      "assignee": "山田太郎",
+      "plannedStartDate": "2026-01-01",
+      "plannedEndDate": "2026-01-10",
+      "actualStartDate": "2026-01-01",
+      "actualEndDate": "2026-01-12",
+      "status": "completed",
+      "progress": 100,
+      "estimatedHours": 40,
+      "actualHours": 48,
+      "priority": "high",
+      "dependencies": [],
+      "tags": ["設計", "ドキュメント"],
+      "notes": "要件定義に想定以上の時間がかかった"
+    },
+    {
+      "id": "TASK-002",
+      "name": "データベース設計",
+      "description": "データモデルとスキーマの設計",
+      "assignee": "佐藤花子",
+      "plannedStartDate": "2026-01-08",
+      "plannedEndDate": "2026-01-15",
+      "actualStartDate": "2026-01-08",
+      "actualEndDate": "2026-01-14",
+      "status": "completed",
+      "progress": 100,
+      "estimatedHours": 32,
+      "actualHours": 30,
+      "priority": "high",
+      "dependencies": ["TASK-001"],
+      "tags": ["設計", "データベース"],
+      "notes": "順調に完了"
+    },
+    {
+      "id": "TASK-003",
+      "name": "API設計",
+      "description": "RESTful APIの設計とドキュメント作成",
+      "assignee": "鈴木一郎",
+      "plannedStartDate": "2026-01-10",
+      "plannedEndDate": "2026-01-20",
+      "actualStartDate": "2026-01-10",
+      "actualEndDate": null,
+      "status": "in_progress",
+      "progress": 75,
+      "estimatedHours": 40,
+      "actualHours": 35,
+      "priority": "high",
+      "dependencies": ["TASK-001"],
+      "tags": ["設計", "API"],
+      "notes": "OpenAPI仕様書作成中"
+    },
+    {
+      "id": "TASK-004",
+      "name": "フロントエンド基盤構築",
+      "description": "React環境のセットアップと基本構造の構築",
+      "assignee": "田中美咲",
+      "plannedStartDate": "2026-01-15",
+      "plannedEndDate": "2026-01-22",
+      "actualStartDate": "2026-01-16",
+      "actualEndDate": null,
+      "status": "in_progress",
+      "progress": 60,
+      "estimatedHours": 24,
+      "actualHours": 18,
+      "priority": "medium",
+      "dependencies": ["TASK-002"],
+      "tags": ["フロントエンド", "インフラ"],
+      "notes": "TypeScript設定に時間がかかっている"
+    },
+    {
+      "id": "TASK-005",
+      "name": "認証機能実装",
+      "description": "ユーザー認証とセッション管理の実装",
+      "assignee": "山田太郎",
+      "plannedStartDate": "2026-01-20",
+      "plannedEndDate": "2026-01-28",
+      "actualStartDate": null,
+      "actualEndDate": null,
+      "status": "not_started",
+      "progress": 0,
+      "estimatedHours": 32,
+      "actualHours": 0,
+      "priority": "critical",
+      "dependencies": ["TASK-003"],
+      "tags": ["バックエンド", "セキュリティ"],
+      "notes": ""
+    },
+    {
+      "id": "TASK-006",
+      "name": "顧客管理画面実装",
+      "description": "顧客情報のCRUD画面を実装",
+      "assignee": "田中美咲",
+      "plannedStartDate": "2026-01-25",
+      "plannedEndDate": "2026-02-05",
+      "actualStartDate": null,
+      "actualEndDate": null,
+      "status": "not_started",
+      "progress": 0,
+      "estimatedHours": 48,
+      "actualHours": 0,
+      "priority": "high",
+      "dependencies": ["TASK-004", "TASK-005"],
+      "tags": ["フロントエンド", "機能"],
+      "notes": ""
+    },
+    {
+      "id": "TASK-007",
+      "name": "ユニットテスト作成",
+      "description": "バックエンドとフロントエンドのユニットテスト",
+      "assignee": "佐藤花子",
+      "plannedStartDate": "2026-02-01",
+      "plannedEndDate": "2026-02-10",
+      "actualStartDate": null,
+      "actualEndDate": null,
+      "status": "not_started",
+      "progress": 0,
+      "estimatedHours": 40,
+      "actualHours": 0,
+      "priority": "medium",
+      "dependencies": ["TASK-005", "TASK-006"],
+      "tags": ["テスト", "品質"],
+      "notes": ""
+    },
+    {
+      "id": "TASK-008",
+      "name": "統合テスト",
+      "description": "E2Eテストと統合テストの実施",
+      "assignee": "鈴木一郎",
+      "plannedStartDate": "2026-02-12",
+      "plannedEndDate": "2026-02-20",
+      "actualStartDate": null,
+      "actualEndDate": null,
+      "status": "not_started",
+      "progress": 0,
+      "estimatedHours": 32,
+      "actualHours": 0,
+      "priority": "high",
+      "dependencies": ["TASK-007"],
+      "tags": ["テスト", "品質"],
+      "notes": ""
+    }
+  ],
+  "pdcaCycles": [
+    {
+      "cycleId": "CYCLE-20260112-001",
+      "date": "2026-01-12T15:00:00+09:00",
+      "plan": {
+        "plannedTasks": 3,
+        "plannedHours": 112,
+        "deviations": [
+          {
+            "taskId": "TASK-001",
+            "description": "要件定義が2日遅延 - 顧客との追加ヒアリングが必要だった",
+            "impact": "medium"
+          }
+        ]
+      },
+      "do": {
+        "completedTasks": 2,
+        "actualHours": 78,
+        "achievements": [
+          "要件定義書の完成とレビュー完了",
+          "データベース設計完了とER図作成"
+        ],
+        "issues": [
+          {
+            "description": "要件定義で想定外のヒアリングが発生",
+            "severity": "medium",
+            "taskId": "TASK-001"
+          }
+        ]
+      },
+      "check": {
+        "progressRate": 25.0,
+        "scheduleVariance": -2,
+        "effortVariance": 7.1,
+        "delayedTasks": [],
+        "qualityMetrics": {
+          "defectCount": 0,
+          "reworkHours": 0
+        },
+        "riskAssessment": "low"
+      },
+      "act": {
+        "improvements": [
+          {
+            "id": "IMP-001",
+            "description": "要件定義時に事前質問リストを作成して効率化",
+            "priority": "medium",
+            "assignee": "山田太郎",
+            "dueDate": "2026-01-20",
+            "status": "in_progress"
+          }
+        ],
+        "lessonsLearned": [
+          "要件定義では顧客との密なコミュニケーションが重要",
+          "データベース設計は要件定義完了後に開始する方が効率的"
+        ],
+        "nextCycleGoals": [
+          "API設計を完了させる",
+          "フロントエンド基盤の80%を完成させる"
+        ]
+      }
+    }
+  ],
+  "metrics": {
+    "overallProgress": 41.9,
+    "completedTasks": 2,
+    "totalTasks": 8,
+    "onTimeRate": 50.0,
+    "effortEfficiency": 63.5,
+    "predictedEndDate": "2026-03-28",
+    "lastUpdated": "2026-01-15T10:30:00+09:00"
+  }
+}

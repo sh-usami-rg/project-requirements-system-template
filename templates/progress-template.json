@@ -1,0 +1,342 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Progress Data Schema",
+  "description": "PDCAサイクル進捗管理データのスキーマ定義",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "プロジェクト名"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "プロジェクト開始日 (YYYY-MM-DD)"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "プロジェクト終了予定日 (YYYY-MM-DD)"
+        },
+        "description": {
+          "type": "string",
+          "description": "プロジェクト概要"
+        }
+      },
+      "required": ["name", "startDate", "endDate"]
+    },
+    "tasks": {
+      "type": "array",
+      "description": "タスク一覧",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "タスク識別子"
+          },
+          "name": {
+            "type": "string",
+            "description": "タスク名"
+          },
+          "description": {
+            "type": "string",
+            "description": "タスク詳細"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "担当者"
+          },
+          "plannedStartDate": {
+            "type": "string",
+            "format": "date",
+            "description": "計画開始日 (YYYY-MM-DD)"
+          },
+          "plannedEndDate": {
+            "type": "string",
+            "format": "date",
+            "description": "計画終了日 (YYYY-MM-DD)"
+          },
+          "actualStartDate": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "実績開始日 (YYYY-MM-DD)"
+          },
+          "actualEndDate": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "実績終了日 (YYYY-MM-DD)"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["not_started", "in_progress", "completed", "blocked", "cancelled"],
+            "description": "タスク状態"
+          },
+          "progress": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "進捗率 (%)"
+          },
+          "estimatedHours": {
+            "type": "number",
+            "minimum": 0,
+            "description": "見積工数 (時間)"
+          },
+          "actualHours": {
+            "type": "number",
+            "minimum": 0,
+            "description": "実績工数 (時間)"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"],
+            "description": "優先度"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "依存タスクID"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "タグ"
+          },
+          "notes": {
+            "type": "string",
+            "description": "備考・メモ"
+          }
+        },
+        "required": ["id", "name", "plannedStartDate", "plannedEndDate", "status", "progress"]
+      }
+    },
+    "pdcaCycles": {
+      "type": "array",
+      "description": "PDCAサイクル履歴",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cycleId": {
+            "type": "string",
+            "description": "サイクル識別子"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "レビュー実施日時"
+          },
+          "plan": {
+            "type": "object",
+            "description": "Plan (計画)",
+            "properties": {
+              "plannedTasks": {
+                "type": "number",
+                "description": "計画タスク数"
+              },
+              "plannedHours": {
+                "type": "number",
+                "description": "計画工数"
+              },
+              "deviations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "taskId": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "impact": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    }
+                  }
+                },
+                "description": "計画からの差異"
+              }
+            }
+          },
+          "do": {
+            "type": "object",
+            "description": "Do (実行)",
+            "properties": {
+              "completedTasks": {
+                "type": "number",
+                "description": "完了タスク数"
+              },
+              "actualHours": {
+                "type": "number",
+                "description": "実績工数"
+              },
+              "achievements": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "達成事項"
+              },
+              "issues": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high", "critical"]
+                    },
+                    "taskId": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": "発生した問題"
+              }
+            }
+          },
+          "check": {
+            "type": "object",
+            "description": "Check (評価)",
+            "properties": {
+              "progressRate": {
+                "type": "number",
+                "description": "全体進捗率 (%)"
+              },
+              "scheduleVariance": {
+                "type": "number",
+                "description": "スケジュール差異 (日数)"
+              },
+              "effortVariance": {
+                "type": "number",
+                "description": "工数差異 (%)"
+              },
+              "delayedTasks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "遅延タスクID"
+              },
+              "qualityMetrics": {
+                "type": "object",
+                "properties": {
+                  "defectCount": {
+                    "type": "number"
+                  },
+                  "reworkHours": {
+                    "type": "number"
+                  }
+                }
+              },
+              "riskAssessment": {
+                "type": "string",
+                "enum": ["low", "medium", "high", "critical"],
+                "description": "リスク評価"
+              }
+            }
+          },
+          "act": {
+            "type": "object",
+            "description": "Act (改善)",
+            "properties": {
+              "improvements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "priority": {
+                      "type": "string",
+                      "enum": ["low", "medium", "high"]
+                    },
+                    "assignee": {
+                      "type": "string"
+                    },
+                    "dueDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["pending", "in_progress", "completed"]
+                    }
+                  }
+                },
+                "description": "改善アクション"
+              },
+              "lessonsLearned": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "教訓・学び"
+              },
+              "nextCycleGoals": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "次サイクルの目標"
+              }
+            }
+          }
+        },
+        "required": ["cycleId", "date", "plan", "do", "check", "act"]
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "集計メトリクス",
+      "properties": {
+        "overallProgress": {
+          "type": "number",
+          "description": "全体進捗率 (%)"
+        },
+        "completedTasks": {
+          "type": "number",
+          "description": "完了タスク数"
+        },
+        "totalTasks": {
+          "type": "number",
+          "description": "総タスク数"
+        },
+        "onTimeRate": {
+          "type": "number",
+          "description": "予定通り完了率 (%)"
+        },
+        "effortEfficiency": {
+          "type": "number",
+          "description": "工数効率 (%)"
+        },
+        "predictedEndDate": {
+          "type": "string",
+          "format": "date",
+          "description": "完了予測日"
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "最終更新日時"
+        }
+      }
+    }
+  },
+  "required": ["project", "tasks", "pdcaCycles", "metrics"]
+}

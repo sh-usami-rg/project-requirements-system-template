@@ -1,0 +1,52 @@
+name: GitHub Tasks Sync
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'tasks.json'
+      - 'schedule.json'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Validate JSON files
+        run: |
+          echo "Validating tasks.json..."
+          python3 -c "import json; json.load(open('tasks.json'))"
+          echo "Validating schedule.json..."
+          python3 -c "import json; json.load(open('schedule.json'))"
+          echo "✓ JSON files are valid"
+
+      - name: Sync with GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/github-sync.py --tasks tasks.json --schedule schedule.json
+
+      - name: Summary
+        run: |
+          echo "### GitHub Sync Completed :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Tasks and milestones have been synchronized with GitHub Issues." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**View Results:**" >> $GITHUB_STEP_SUMMARY
+          echo "- [Issues](https://github.com/${{ github.repository }}/issues)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Milestones](https://github.com/${{ github.repository }}/milestones)" >> $GITHUB_STEP_SUMMARY

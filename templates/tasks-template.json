@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Tasks Schema",
+  "description": "Schema for project tasks generated from SPEC.md",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Project description"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Project start date (YYYY-MM-DD)"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Project end date (YYYY-MM-DD)"
+        }
+      },
+      "required": ["name", "startDate"]
+    },
+    "tasks": {
+      "type": "array",
+      "description": "Work Breakdown Structure (WBS) - hierarchical task list",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique task identifier (e.g., T001, T002)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Task name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed task description"
+          },
+          "category": {
+            "type": "string",
+            "description": "Task category (e.g., design, development, testing, documentation)",
+            "enum": ["planning", "design", "development", "testing", "documentation", "deployment", "other"]
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task priority level",
+            "enum": ["critical", "high", "medium", "low"]
+          },
+          "status": {
+            "type": "string",
+            "description": "Current task status",
+            "enum": ["not_started", "in_progress", "completed", "blocked", "cancelled"]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Task start date (YYYY-MM-DD)"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Task completion date (YYYY-MM-DD)"
+          },
+          "estimatedHours": {
+            "type": "number",
+            "description": "Estimated effort in hours",
+            "minimum": 0
+          },
+          "actualHours": {
+            "type": "number",
+            "description": "Actual effort spent in hours",
+            "minimum": 0
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Person assigned to the task"
+          },
+          "dependencies": {
+            "type": "array",
+            "description": "List of task IDs that must be completed before this task",
+            "items": {
+              "type": "string"
+            }
+          },
+          "subtasks": {
+            "type": "array",
+            "description": "Child tasks (for hierarchical WBS)",
+            "items": {
+              "type": "string",
+              "description": "Subtask ID"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "Additional tags for categorization",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes or comments"
+          }
+        },
+        "required": ["id", "name", "category", "priority", "status", "startDate", "endDate", "estimatedHours"]
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this file was generated"
+        },
+        "generatedFrom": {
+          "type": "string",
+          "description": "Source file (e.g., SPEC.md)"
+        },
+        "version": {
+          "type": "string",
+          "description": "Schema version"
+        }
+      }
+    }
+  },
+  "required": ["project", "tasks", "metadata"]
+}

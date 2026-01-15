@@ -1,0 +1,270 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Schedule Schema",
+  "description": "Schema for project schedules with daily, weekly, and monthly views",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Project name"
+        },
+        "totalTasks": {
+          "type": "integer",
+          "description": "Total number of tasks"
+        },
+        "completedTasks": {
+          "type": "integer",
+          "description": "Number of completed tasks"
+        },
+        "progressPercentage": {
+          "type": "number",
+          "description": "Overall project progress (0-100)",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Project start date (YYYY-MM-DD)"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Project end date (YYYY-MM-DD)"
+        }
+      },
+      "required": ["name", "totalTasks", "completedTasks", "progressPercentage"]
+    },
+    "dailySchedule": {
+      "type": "array",
+      "description": "Daily task assignments",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date (YYYY-MM-DD)"
+          },
+          "dayOfWeek": {
+            "type": "string",
+            "description": "Day of week (Monday-Sunday)"
+          },
+          "tasks": {
+            "type": "array",
+            "description": "Tasks scheduled for this day",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "string",
+                  "description": "Task ID"
+                },
+                "taskName": {
+                  "type": "string",
+                  "description": "Task name"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["not_started", "in_progress", "completed", "blocked", "cancelled"]
+                },
+                "estimatedHours": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "assignee": {
+                  "type": "string"
+                }
+              },
+              "required": ["taskId", "taskName", "status"]
+            }
+          },
+          "totalHours": {
+            "type": "number",
+            "description": "Total hours scheduled for this day",
+            "minimum": 0
+          }
+        },
+        "required": ["date", "dayOfWeek", "tasks", "totalHours"]
+      }
+    },
+    "weeklySchedule": {
+      "type": "array",
+      "description": "Weekly task summaries",
+      "items": {
+        "type": "object",
+        "properties": {
+          "weekNumber": {
+            "type": "integer",
+            "description": "Week number in the year"
+          },
+          "weekStart": {
+            "type": "string",
+            "format": "date",
+            "description": "Week start date (Monday)"
+          },
+          "weekEnd": {
+            "type": "string",
+            "format": "date",
+            "description": "Week end date (Sunday)"
+          },
+          "tasks": {
+            "type": "array",
+            "description": "Tasks scheduled for this week",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "string"
+                },
+                "taskName": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "estimatedHours": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "totalHours": {
+            "type": "number",
+            "description": "Total hours scheduled for this week",
+            "minimum": 0
+          },
+          "progressPercentage": {
+            "type": "number",
+            "description": "Week progress (0-100)",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": ["weekNumber", "weekStart", "weekEnd", "tasks", "totalHours", "progressPercentage"]
+      }
+    },
+    "monthlySchedule": {
+      "type": "array",
+      "description": "Monthly task summaries",
+      "items": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "description": "Month (YYYY-MM)"
+          },
+          "monthName": {
+            "type": "string",
+            "description": "Month name (e.g., January)"
+          },
+          "tasks": {
+            "type": "array",
+            "description": "Tasks scheduled for this month",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "string"
+                },
+                "taskName": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "estimatedHours": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "totalHours": {
+            "type": "number",
+            "description": "Total hours scheduled for this month",
+            "minimum": 0
+          },
+          "progressPercentage": {
+            "type": "number",
+            "description": "Month progress (0-100)",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        "required": ["month", "monthName", "tasks", "totalHours", "progressPercentage"]
+      }
+    },
+    "ganttChart": {
+      "type": "object",
+      "description": "Gantt chart representation",
+      "properties": {
+        "timeline": {
+          "type": "array",
+          "description": "Timeline entries for Gantt chart",
+          "items": {
+            "type": "object",
+            "properties": {
+              "taskId": {
+                "type": "string"
+              },
+              "taskName": {
+                "type": "string"
+              },
+              "startDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "endDate": {
+                "type": "string",
+                "format": "date"
+              },
+              "duration": {
+                "type": "integer",
+                "description": "Duration in days"
+              },
+              "progress": {
+                "type": "number",
+                "description": "Task progress (0-100)",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "dependencies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["taskId", "taskName", "startDate", "endDate", "duration", "progress"]
+          }
+        },
+        "visualization": {
+          "type": "string",
+          "description": "ASCII/text-based Gantt chart visualization"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when this file was generated"
+        },
+        "generatedFrom": {
+          "type": "string",
+          "description": "Source file (e.g., tasks.json)"
+        },
+        "version": {
+          "type": "string",
+          "description": "Schema version"
+        }
+      }
+    }
+  },
+  "required": ["project", "dailySchedule", "weeklySchedule", "monthlySchedule", "ganttChart", "metadata"]
+}
