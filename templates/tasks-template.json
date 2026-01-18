@@ -51,6 +51,10 @@
             "description": "Task category (e.g., design, development, testing, documentation)",
             "enum": ["planning", "design", "development", "testing", "documentation", "deployment", "other"]
           },
+          "midCategory": {
+            "type": "string",
+            "description": "Mid-level category between Phase (large) and Task (small). Examples: '計画策定', '要件定義', '設計', '実装', 'テスト', 'デプロイ・リリース'"
+          },
           "priority": {
             "type": "string",
             "description": "Task priority level",

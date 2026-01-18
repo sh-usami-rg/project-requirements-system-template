@@ -1,6 +1,6 @@
-# 顧問ミドル運用ダッシュボード移行プロジェクト
+# Project Requirements System Template
 
-Google Spreadsheetsで行っているデータ管理・分析を、BigQueryを基盤としたLooker / Looker Studio環境へ移行し、運用の効率化と分析の高度化を実現するプロジェクトです。
+プロジェクト要件整理から計画自動化、GitHub連携、ガントチャート管理をテンプレート化したシステムです。
 
 ## 🚀 このシステムでできること
 
@@ -18,34 +18,6 @@ Google Spreadsheetsで行っているデータ管理・分析を、BigQueryを�
 **詳細ワークフロー**: [docs/PROJECT_WORKFLOW_GUIDE.md](docs/PROJECT_WORKFLOW_GUIDE.md) を参照
 
 ---
-
-## プロジェクト概要
-
-- **プロジェクト名**: 顧問ミドル運用ダッシュボード移行
-- **期間**: 2026年1月6日 〜 2026年3月30日（12週間）
-- **稼働体制**: 1名兼任（50%稼働）
-- **総工数**: 28.5人日（199.5時間）
-- **目標**: スプレッドシート管理工数を80%削減、リアルタイム分析の実現
-
-## 主要成果物
-
-### Phase 1: 基盤整備と設計（Week 1-4）
-- BigQueryテーブルドキュメント
-- データマッピング表
-- KPI定義書
-- LookerML設計書
-
-### Phase 2: 実装と技術検証（Week 5-8）
-- Looker Studioダッシュボード×3（経営、稼働状況、財務）
-- LookerML基本構造
-- GitHubリポジトリ
-- トレーニング資料
-
-### Phase 3: フル移行と展開（Week 9-12）
-- Lookerダッシュボード×4（中・低優先度）
-- システム設計書
-- 運用手順書
-- 本番リリース
 
 ## ファイル構成
 
@@ -66,18 +38,106 @@ project-requirements-system/
 │   ├── PROGRESS_REPORT_SETUP.md      # 進捗レポート初期セットアップ手順
 │   ├── PROGRESS_REPORT_USAGE.md      # 進捗レポート利用ガイド
 │   ├── GITHUB_SYNC_SETUP.md          # GitHub同期セットアップ手順
-│   └── SCHEDULE_UPDATE_GUIDE.md      # スケジュール更新ガイド
+│   ├── SCHEDULE_UPDATE_GUIDE.md      # スケジュール更新ガイド
+│   ├── MID_CATEGORY_GUIDE.md         # 中カテゴリ管理ガイド
+│   └── SCHEMA.md                     # tasks.jsonスキーマ定義
 │
 ├── scripts/                           # 自動化スクリプト
 │   ├── send-progress-report.py       # 週次進捗レポート生成・送信
 │   ├── sync-github.py                # GitHub Issues & Projects同期
 │   ├── update-schedule.py            # スケジュール更新オーケストレーション
-│   └── set-issue-dates.py            # Projects V2日付一括設定
+│   ├── set-issue-dates.py            # Projects V2日付一括設定
+│   ├── add-mid-category.py           # 中カテゴリ一括追加
+│   ├── update-mid-category-to-github.py  # 中カテゴリGitHub同期
+│   └── add-mid-category-field-to-projects.py  # Projects V2フィールド追加
+│
+├── examples/                          # プロジェクト例
+│   ├── web-app-project/              # Webアプリ開発プロジェクト例
+│   │   ├── tasks.json                # 中カテゴリ設定済みタスク定義
+│   │   └── mid-categories.md         # 中カテゴリ定義説明
+│   └── data-analysis-project/        # データ分析プロジェクト例
+│       ├── tasks.json                # 中カテゴリ設定済みタスク定義
+│       └── mid-categories.md         # 中カテゴリ定義説明
 │
 └── .github/
     └── workflows/
         └── weekly-progress-report.yml # GitHub Actions（週次レポート自動送信）
 ```
+
+---
+
+## 中カテゴリ管理機能
+
+プロジェクトを**3階層**で管理し、より適切な粒度で進捗を把握できます。
+
+### 階層構造
+
+```
+プロジェクト
+├── Phase 1（大カテゴリ）
+│   ├── 計画策定（中カテゴリ）
+│   │   ├── TASK-001: キックオフミーティング開催
+│   │   └── TASK-002: プロジェクト憲章作成
+│   └── 要件定義（中カテゴリ）
+│       ├── TASK-003: ユーザーヒアリング実施
+│       └── TASK-004: 要件定義書作成
+├── Phase 2（大カテゴリ）
+│   ├── 設計（中カテゴリ）
+│   │   └── TASK-005: システム設計書作成
+│   └── 実装（中カテゴリ）
+│       └── TASK-006: 機能実装
+...
+```
+
+### 中カテゴリの設定方法
+
+#### 1. tasks.jsonに追加
+
+各タスクに `midCategory` フィールドを追加：
+
+```json
+{
+  "id": "TASK-001",
+  "title": "プロジェクト計画策定",
+  "phase": "Phase 1",
+  "midCategory": "計画策定",
+  "category": "documentation",
+  ...
+}
+```
+
+#### 2. GitHubに同期
+
+```bash
+# 中カテゴリラベル作成 & Issueタイトル変更
+python3 scripts/update-mid-category-to-github.py
+
+# Projects V2にフィールド追加
+python3 scripts/add-mid-category-field-to-projects.py
+```
+
+#### 3. GitHub Projects V2で可視化
+
+- ロードマップビューで「Mid Category」でグループ化
+- フィルタで特定の中カテゴリのみ表示
+- 中カテゴリ単位でガントチャート確認
+
+### 中カテゴリの例
+
+プロジェクトタイプに応じて適切な中カテゴリを定義してください：
+
+#### Webアプリ開発プロジェクト
+- 計画策定、要件定義、設計、環境構築、フロントエンド実装、バックエンド実装、テスト、デプロイ・リリース
+
+#### データ分析プロジェクト
+- 調査・分析、データモデル設計、環境構築、学習、PoC、実装、精度検証、ユーザーテスト、本番リリース
+
+#### インフラ構築プロジェクト
+- 計画策定、要件定義、設計、環境構築、ネットワーク設定、セキュリティ設定、監視設定、テスト、本番移行
+
+**詳細は [中カテゴリ管理ガイド](docs/MID_CATEGORY_GUIDE.md) を参照してください。**
+
+---
 
 ## クイックスタート
 
@@ -327,17 +387,17 @@ Claude Codeに以下のようにリクエストするだけで、スケジュー
 ### Phase終了時
 
 ```
-Phase 1終了 (Week 4: 1/31):
+Phase 1終了:
   ├─ 成果物レビュー
   ├─ マイルストーン達成確認
   └─ Phase 2移行判定
 
-Phase 2終了 (Week 9: 3/5):
+Phase 2終了:
   ├─ 成果物レビュー
   ├─ ユーザーレビュー
   └─ Phase 3移行判定
 
-Phase 3終了 (Week 12: 3/30):
+Phase 3終了:
   ├─ 最終成果物レビュー
   ├─ 本番リリース
   └─ プロジェクト完了判定
@@ -369,7 +429,7 @@ git push origin main
 ```json
 {
   "id": "TASK-001",
-  "title": "既存BigQuery DWHテーブルの整合性確認",
+  "title": "タスク名",
   "status": "done",  ← "in_progress" から "done" に変更
   ...
 }
@@ -427,7 +487,6 @@ git push origin main
                  ▼
         ┌─────────────────────────┐
         │  プロジェクト実行       │
-        │  (Week 1-12)            │
         └────────┬────────────────┘
                  │
         ┌────────┴────────┐
@@ -447,50 +506,13 @@ git push origin main
                  ▼
         ┌─────────────────────────┐
         │  Phase 終了レビュー     │
-        │  (Week 4, 9, 12)        │
         └────────┬────────────────┘
                  │
                  ▼
         ┌─────────────────────────┐
         │  プロジェクト完了       │
-        │  (2026-03-30)           │
         └─────────────────────────┘
 ```
-
-## 主要マイルストーン
-
-| # | 日付 | マイルストーン | 成果物 |
-|---|------|---------------|--------|
-| M1 | 2026-01-31 | Phase 1完了: 基盤整備・設計完了 | BigQueryドキュメント、マッピング表、KPI定義書、LookerML設計書 |
-| M2 | 2026-03-05 | Phase 2完了: Looker Studio高優先度DB完成 | ダッシュボード×3、LookerML基本構造、開発ガイドライン |
-| M3 | 2026-03-30 | Phase 3完了: 全ダッシュボード完成、本番リリース | ダッシュボード×4、設計書、運用手順書、本番環境 |
-
-## クリティカルパス（要注意タスク）
-
-以下のタスクは、プロジェクト納期に直接影響します。優先的に進めてください。
-
-```
-TASK-001 → TASK-005 → TASK-006 → TASK-007 → TASK-008
-   ↓
-TASK-015
-   ↓
-TASK-018
-   ↓
-TASK-022 → TASK-023 → TASK-024 → TASK-025
-```
-
-- **TASK-007**: KPI定義・分析軸の明確化（2.5日）⚠️
-- **TASK-008**: LookerML設計方針策定（2.5日）⚠️
-- **TASK-015**: LookerML基本構造実装（1.5日）⚠️
-
-## リスク管理
-
-| リスク | 影響度 | 発生確率 | 対策 |
-|--------|-------|---------|------|
-| LookerML習熟度不足 | 高 | 中 | Phase 2でトライアル期間設定、外部トレーニング活用 |
-| データ品質問題 | 高 | 中 | Phase 1で徹底的なデータ検証、自動チェック導入 |
-| ユーザー要件変更 | 中 | 高 | 優先度による段階的実装、変更管理プロセス明確化 |
-| 50%稼働による遅延 | 高 | 中 | クリティカルパス厳格管理、早期リスク検知 |
 
 ## GitHub連携（自動化）
 
@@ -591,35 +613,33 @@ python3 scripts/update-schedule.py --task TASK-007 --extend-deadline 7
 
 ## コントリビューション
 
-このプロジェクトは顧問名鑑サービスの内部プロジェクトです。
+このテンプレートへの貢献を歓迎します。
 
 変更を行う場合:
-1. ブランチを作成
-2. 変更をコミット
-3. プルリクエストを作成
-4. レビュー後にマージ
+1. このリポジトリをフォーク
+2. 新しいブランチを作成 (`git checkout -b feature/improvement`)
+3. 変更をコミット (`git commit -am 'Add some improvement'`)
+4. ブランチにプッシュ (`git push origin feature/improvement`)
+5. プルリクエストを作成
 
 ## ライセンス
 
-社内プロジェクト - All Rights Reserved
+MIT License
+
+このテンプレートは自由に使用、変更、配布できます。
 
 ## サポート・お問い合わせ
 
-- **プロジェクトマネージャー**: [未定]
-- **BI Engineer**: [未定]
-- **Slack**: #project-dashboard-migration
-- **GitHub Issues**: 問題報告・質問はこちら
+質問や問題がある場合は、[GitHub Issues](../../issues)で報告してください。
 
 ## バージョン履歴
 
 | バージョン | 日付 | 変更内容 |
 |-----------|------|---------|
-| 1.1 | 2026-01-15 | 完全ワークフローガイド追加、PLAN.md自動更新機能追加 |
-| 1.0 | 2026-01-15 | 初版作成 |
+| 2.0.0 | 2026-01-18 | 中カテゴリ管理機能追加、テンプレート汎用化 |
+| 1.1.0 | 2026-01-15 | 完全ワークフローガイド追加、PLAN.md自動更新機能追加 |
+| 1.0.0 | 2026-01-15 | 初版作成 |
 
 ---
 
-**最終更新**: 2026-01-15
 **作成者**: Claude AI (Sonnet 4.5)
-**プロジェクト開始**: 2026-01-06
-**プロジェクト終了予定**: 2026-03-30
