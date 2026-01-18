@@ -1,0 +1,44 @@
+name: Daily Progress Report
+
+on:
+  schedule:
+    # 毎日 18:30 JST (09:30 UTC) に実行
+    - cron: '30 9 * * *'
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Generate daily report
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # tasks.jsonの存在確認
+          if [ ! -f "tasks.json" ]; then
+            echo "Error: tasks.json not found"
+            exit 1
+          fi
+
+          # レポート生成とGitHub Issueへ投稿
+          # ISSUE_NUMBER を実際のIssue番号に変更してください（例: 66）
+          python3 scripts/daily-report.py --github --issue-number ${ISSUE_NUMBER}
+        env:
+          # ⚠️ 重要: この値を実際のGitHub Issue番号に変更してください
+          # 例: 進捗レポート用のIssue #1 を作成した場合は ISSUE_NUMBER=1
+          ISSUE_NUMBER: 1
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::日次レポートの生成に失敗しました"

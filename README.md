@@ -11,6 +11,8 @@
 3. **📅 自動スケジューリング** - `/schedule-tasks` で12週間のスケジュールを作成
 4. **🔗 GitHub完全連携** - `/github-sync` でIssues・Milestones・Projects V2・Roadmapを自動作成
 5. **🔄 スケジュール変更管理** - 自然言語でスケジュール変更→全ファイル+GitHub自動更新
+6. **📊 進捗可視化** - EVM方式で進捗計算、バッジ表示、マインドマップ生成
+7. **📧 日次レポート自動配信** - 毎日18:30にGitHub Issueへ進捗レポート投稿
 
 **所要時間**: 仕様書からGitHub Roadmapまで約1.5時間（手作業なら数日）
 
@@ -38,7 +40,10 @@ project-requirements-system/
 │   ├── SCHEDULE_UPDATE_GUIDE.md      # スケジュール更新ガイド
 │   ├── SYSTEM_MANAGEMENT_GUIDE.md    # システム管理ガイド
 │   ├── MID_CATEGORY_GUIDE.md         # 中カテゴリ管理ガイド
-│   └── SCHEMA.md                     # tasks.jsonスキーマ定義
+│   ├── PROGRESS_VISUALIZATION_GUIDE.md  # 進捗可視化ガイド
+│   ├── DAILY_REPORT_GUIDE.md         # 日次レポートガイド
+│   ├── SCHEMA.md                     # tasks.jsonスキーマ定義
+│   └── MINDMAP.md                    # プロジェクトマインドマップ（自動生成）
 │
 ├── scripts/                           # 自動化スクリプト
 │   ├── sync-github.py                # GitHub Issues & Projects同期
@@ -47,7 +52,10 @@ project-requirements-system/
 │   ├── create-missing-issues.py      # 不足しているIssueを作成
 │   ├── add-mid-category.py           # 中カテゴリ一括追加
 │   ├── update-mid-category-to-github.py  # 中カテゴリGitHub同期
-│   └── add-mid-category-field-to-projects.py  # Projects V2フィールド追加
+│   ├── add-mid-category-field-to-projects.py  # Projects V2フィールド追加
+│   ├── calculate-progress.py         # 進捗計算とREADME.md更新
+│   ├── generate-mindmap.py           # マインドマップ生成
+│   └── daily-report.py               # 日次レポート生成
 │
 ├── examples/                          # プロジェクト例
 │   ├── web-app-project/              # Webアプリ開発プロジェクト例
@@ -59,7 +67,8 @@ project-requirements-system/
 │
 └── .github/
     └── workflows/
-        └── github-sync.yml           # GitHub Actions（GitHub同期）
+        ├── github-sync.yml           # GitHub Actions（GitHub同期）
+        └── daily-progress-report.yml # GitHub Actions（日次レポート自動配信）
 ```
 
 ---
@@ -134,6 +143,63 @@ python3 scripts/add-mid-category-field-to-projects.py
 - 計画策定、要件定義、設計、環境構築、ネットワーク設定、セキュリティ設定、監視設定、テスト、本番移行
 
 **詳細は [中カテゴリ管理ガイド](docs/MID_CATEGORY_GUIDE.md) を参照してください。**
+
+---
+
+## 📊 進捗可視化機能
+
+EVM（Earned Value Management）方式で正確な進捗を計算・可視化します。
+
+### 使い方
+
+```bash
+# 進捗計算とREADME.md自動更新
+python3 scripts/calculate-progress.py
+
+# マインドマップ生成
+python3 scripts/generate-mindmap.py
+```
+
+### 表示される情報
+
+- **進捗率バッジ**: 完了したタスクのウェイト割合
+- **SPI（スケジュール効率指数）**: 1.0以上で予定より進んでいる
+- **CPI（コスト効率指数）**: 1.0以上で予算内で進んでいる
+- **Phase別進捗**: 各Phaseの進捗状況をテーブル表示
+- **中カテゴリ別進捗**: 中カテゴリごとの進捗状況
+- **マインドマップ**: Phase > Mid Category > Task の階層構造で可視化
+
+**詳細は [進捗可視化ガイド](docs/PROGRESS_VISUALIZATION_GUIDE.md) を参照してください。**
+
+---
+
+## 📧 日次レポート自動配信機能
+
+GitHub Actionsで毎日18:30に進捗レポートを自動投稿します。
+
+### セットアップ
+
+```bash
+# 1. 進捗レポート用Issueを作成
+gh issue create \
+  --title "📊 日次進捗レポート" \
+  --body "このIssueには、プロジェクトの日次進捗レポートが自動投稿されます。" \
+  --label "progress-report"
+
+# 2. .github/workflows/daily-progress-report.yml のISSUE_NUMBERを更新
+# 3. コミット＆プッシュで有効化
+```
+
+### レポート内容
+
+- 全体進捗（進捗率、ステータス別タスク数、進捗バー）
+- 本日のタスク
+- 進行中のタスク
+- ブロック中のタスク
+- 最近完了したタスク（直近5件）
+- Phase別進捗
+
+**詳細は [日次レポートガイド](docs/DAILY_REPORT_GUIDE.md) を参照してください。**
 
 ---
 
