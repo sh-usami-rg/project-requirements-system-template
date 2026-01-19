@@ -127,7 +127,16 @@ def generate_mindmap_content(data: Dict) -> str:
                 task_id = task.get('id', 'N/A')
                 task_title = task.get('title', task.get('name', 'Unnamed'))
 
-                mindmap += f"{task_prefix} {status_emoji} {priority_emoji} [{task_id}] {task_title}\n"
+                # 日付と重みを追加
+                start = task.get('start_date', 'N/A')
+                end = task.get('end_date', 'N/A')
+                weight = task.get('weight', 0)
+
+                # Format: MM-DD形式
+                start_short = start[5:] if start != 'N/A' and len(start) > 5 else 'N/A'
+                end_short = end[5:] if end != 'N/A' and len(end) > 5 else 'N/A'
+
+                mindmap += f"{task_prefix} {status_emoji} {priority_emoji} [{task_id}] {task_title} ({start_short}〜{end_short}, W={weight})\n"
 
     mindmap += "```\n\n"
 

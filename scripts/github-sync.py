@@ -193,10 +193,10 @@ class GitHubSync:
                 labels.append(f"priority:{task['priority']}")
 
             # Get milestone number
-            milestone_number = None
+            milestone_title = None
             if task.get('milestone') and task['milestone'] in milestone_titles:
                 milestone_title = milestone_titles[task['milestone']]
-                milestone_number = milestone_map.get(milestone_title)
+                milestone_title = milestone_titles[task['milestone']]
 
             if title in existing_issues:
                 # Update existing issue
@@ -216,8 +216,8 @@ class GitHubSync:
                 if labels:
                     cmd.extend(['--add-label', ','.join(labels)])
 
-                if milestone_number:
-                    cmd.extend(['--milestone', str(milestone_number)])
+                if milestone_title:
+                    cmd.extend(['--milestone', milestone_title])
 
                 self._run_gh_command(cmd)
 
@@ -241,8 +241,8 @@ class GitHubSync:
                 if labels:
                     cmd.extend(['--label', ','.join(labels)])
 
-                if milestone_number:
-                    cmd.extend(['--milestone', str(milestone_number)])
+                if milestone_title:
+                    cmd.extend(['--milestone', milestone_title])
 
                 if task.get('assignee'):
                     cmd.extend(['--assignee', task['assignee']])
@@ -265,7 +265,7 @@ class GitHubSync:
             f"- **Task ID**: {task['id']}",
             f"- **Status**: {task['status']}",
             f"- **Priority**: {task.get('priority', 'N/A')}",
-            f"- **Effort**: {task['effort_days']} days",
+            f"- **Effort**: {task.get('effort', task.get('effort_days', 'N/A'))} days",
         ]
 
         if task.get('milestone'):
@@ -338,8 +338,8 @@ class GitHubSync:
         in_progress_tasks = sum(1 for t in self.tasks_data['tasks'] if t['status'] == 'in_progress')
         pending_tasks = sum(1 for t in self.tasks_data['tasks'] if t['status'] == 'pending')
 
-        total_effort = sum(t['effort_days'] for t in self.tasks_data['tasks'])
-        completed_effort = sum(t['effort_days'] for t in self.tasks_data['tasks'] if t['status'] == 'completed')
+        total_effort = sum(t.get('effort', t.get('effort_days', 0)) for t in self.tasks_data['tasks'])
+        completed_effort = sum(t.get('effort', t.get('effort_days', 0)) for t in self.tasks_data['tasks'] if t['status'] == 'completed')
 
         progress_percentage = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
         effort_percentage = (completed_effort / total_effort * 100) if total_effort > 0 else 0
